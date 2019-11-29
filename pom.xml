@@ -51,11 +51,12 @@
             <version>1.2.3</version>
         </dependency>
 
-        <!--mysql依赖-->
+        <!--mysql依赖 运行时使用-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.12</version>
+            <scope>runtime</scope>
         </dependency>
         <!--数据库连接池-->
         <dependency>
