@@ -1,0 +1,32 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.seckill.dao.SuccessKilledDao">
+    <!--/*使用ignore使得如果发生主键冲突，不报错，返回0*/-->
+    <insert id="insertSuccessKilled">
+        insert ignore into success_killed
+        (seckill_id,phone_number,state)
+        values
+        (#{seckillId},#{phoneNumber},1)
+    </insert>
+
+    <!--以下是通过级联给对象中对象赋值，级联方式-->
+    <select id="queryWithSeckill" resultType="org.seckill.entity.SuccessKilled">
+        select
+        sk.seckill_id,
+        sk.phone_number,
+        sk.state,
+        sk.create_time,
+        s.seckill_id "seckill.seckill_id",
+        s.name "seckill.name",
+        s.number "seckill.number",
+        s.start_time "seckill.start_time",
+        s.end_time "seckill.end_time",
+        s.create_time "seckill.create_time"
+        from
+        success_killed as sk
+        inner join seckill as s on sk.seckill_id = s.seckill_id
+        where s.seckill_id = #{seckillId} and phone_number=#{phoneNumber}
+    </select>
+
+</mapper>

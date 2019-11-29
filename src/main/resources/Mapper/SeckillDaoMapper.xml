@@ -1,0 +1,39 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.seckill.dao.SeckillDao">
+    <!--减库存操作-->
+    <update id="reduceNumber">
+        update seckill
+        set
+        number = number - 1
+        where seckill_id = #{seckillId}
+        and start_time <![CDATA[<=]]> #{killedTime}
+        and end_time >= #{killedTime}
+        and number > 0
+    </update>
+    <!--
+    注意这里最好别使用select *
+    原因如下：
+    1.select * 解析查询的是所有的字段，不会是否查询出的数据中需要使用当前的字段，都会查询
+    会对服务器资源造成浪费
+    2.如果表的结构在以后发生了变化，取出的数据可能是错误的。
+    3.执行select * 会对表中所有列进行权限检查，也是额外的开销
+    4.使用select * 语句将不会使用到覆盖索引，不利于查询的索引优化
+    5.在文档的角度来看，select * 没有说明需要取出什么样的字段，不具备针对性，不推荐
+    -->
+    <select id="queryById" parameterType="long" resultType="org.seckill.entity.Seckill">
+        select seckill_id,name,number,start_time,end_time,create_time
+        from seckill
+        where
+        seckill_id = #{seckillId}
+    </select>
+
+    <select id="queryAll" resultType="org.seckill.entity.Seckill" parameterType="int">
+        select seckill_id,name,number,start_time,end_time,create_time
+        from seckill
+        limit #{limit} offset #{offset}
+    </select>
+
+
+</mapper>
