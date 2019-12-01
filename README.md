@@ -1,6 +1,8 @@
-# seckill-project
+# seckill-project 具体的代码在分支feature/1.0上
 java高并发秒杀项目
-[markdown-toc]
+
+markdown-toc
+
 ## 1. 选用秒杀的原因
 * 秒杀业务场景具有典型“事务”特性
 * 秒杀/红包类需求越来越常见
