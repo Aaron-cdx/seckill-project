@@ -33,6 +33,11 @@ public class ExecutionSeckill {
         this.stateInfo = stateEnum.getStateInfo();
     }
 
+    public ExecutionSeckill(long seckillId, String stateInfo) {
+        this.seckillId = seckillId;
+        this.stateInfo = stateInfo;
+    }
+
     public long getSeckillId() {
         return seckillId;
     }

@@ -45,4 +45,13 @@ public enum SeckillStateEnum {
         }
         return null;
     }
+
+    public static String stateOf(int index){
+        for (SeckillStateEnum stateEnum : values()) {
+            if (stateEnum.getState() == index) {
+                return stateEnum.getStateInfo();
+            }
+        }
+        return null;
+    }
 }

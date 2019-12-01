@@ -52,4 +52,26 @@
         <!--配置扫描Dao接口-->
         <property name="basePackage" value="org.seckill.dao"></property>
     </bean>
+
+    <!--配置redis，将redis对象注入，使用构造器方法注入-->
+   <!-- <bean id="redisDao" class="org.seckill.dao.cache.RedisDao">
+        &lt;!&ndash;在这里将参数ip和port写死，这样的话Spring会自动注入，可以实现对象的直接获取&ndash;&gt;
+        <constructor-arg index="0" value="192.168.87.101"></constructor-arg>
+        <constructor-arg index="1" value="6379"></constructor-arg>
+    </bean>-->
+
+    <!-- RedisDAO -->
+    <bean id="redisDao" class="org.seckill.dao.cache.RedisDao">
+        <constructor-arg index="0" value="192.168.87.101"  type="java.lang.String"/>
+        <constructor-arg index="1" value="6379" type="int"/>
+        <constructor-arg index="2" value="5000" type="int"/>
+        <!--<constructor-arg index="3" value="raspppoe" type="java.lang.String"/>-->
+    </bean>
+
+    <!-- 自动扫描带RedisComponent注解的包 -->
+    <context:component-scan
+            base-package="org.seckill.dao.cache">
+        <context:include-filter type="annotation"
+                                expression="org.seckill.infrastructure.RedisComponent" />
+    </context:component-scan>
 </beans>

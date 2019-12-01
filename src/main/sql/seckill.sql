@@ -35,3 +35,58 @@ create table success_killed(
 primary key(`seckill_id`,`phone_number`),
 key idx_create_time(`create_time`)
 )ENGINE=INNODB DEFAULT charset=utf8 comment '秒杀成功明细表';
+
+
+-- 使用存储过程优化sql的执行
+-- 使用存储过程执行秒杀
+
+DELIMITER $$ -- console ; 转换为 $$
+
+create procedure `seckill`.`execute_seckill`
+(
+    IN v_seckill_id bigint, IN v_phone bigint, IN v_kill_time timestamp, out r_result INT
+)
+BEGIN
+DECLARE
+    insert_count int default 0;
+start transaction;
+insert ignore into success_killed(seckill_id,user_phone,create_time)
+values
+(v_seckill_id,v_phone,v_kill_time);
+select
+    ROW_COUNT() into insert_count;
+if(insert_count = 0) then rollback;
+set r_result = -1;
+elseif(insert_count < 0) then rollback;
+set r_result = -2;
+else
+    update seckill
+    set number = number - 1
+    where seckill_id = v_seckill_id
+    and end_time > v_kill_time
+    and start_time < v_kill_time and number > 0;
+select ROW_COUNT() into insert_count;
+if(insert_count = 0) then
+    rollback;
+    set r_result = 0;
+elseif(insert_count < 0) then
+    rollback;
+    set r_result = -2;
+else commit; set r_result = 1;
+end if;
+end if;
+end;
+$$
+-- 存储过程定义结束
+DELIMITER ;
+set @r_result = -3;
+call execute_seckill(1001,13232349988,now(),@r_result);
+select @r_result;
+
+-- 存储过程
+-- 1.存储过程优化，事务行级锁持有时间
+-- 2.不要过度依赖存储过程
+-- 3.简单的逻辑可以应用存储过程
+-- 4.QPS：当前的秒杀单一个6000/QPS
+
+
